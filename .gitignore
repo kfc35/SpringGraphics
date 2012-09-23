@@ -1,0 +1,16 @@
+# Eclipse File
+###########
+*.metadata
+*.project
+*.classpath
+*/bin
+
+# Mac Files
+###########
+*.DS_Store
+
+# Proj specific files
+###############
+Proj1/data
+Proj1/icons
+Proj1/lib
