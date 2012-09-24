@@ -10,15 +10,16 @@ public class Sphere extends TriangleMesh
 	@Override
 	public void buildMesh(float tolerance) {
 		// TODO: (Problem 2) Fill in the code to create a sphere mesh.
+		// TODO: Right now same vertex is stored multiple times. Need to reduce them?
 		int numLongSteps = (int) (360/(180*(tolerance/5)));
 		int numLatSteps = (int) (180/(180*(tolerance/5)));
 		float step_t = 360f/numLongSteps;
 		float step_p = 180f/numLatSteps;
 		int numVertex = 4*numLongSteps*numLatSteps;
 		
-		float[] vertices = new float[numVertex*3];
-		float[] normals = new float[numVertex*3];
-		int[] triangles = new int[numLongSteps*numLatSteps*2*3];
+		vertices = new float[numVertex*3];
+		normals = new float[numVertex*3];
+		triangles = new int[numLongSteps*numLatSteps*2*3];
 		
 		int counter = 0;
 		int triCounter = 0;
@@ -33,72 +34,54 @@ public class Sphere extends TriangleMesh
 				Vector3f normal = new Vector3f();
 				
 				// left bottom vertex
-				int vlt = counter;
-				vertices[3*vlt] = (float) (Math.cos(theta)*Math.sin(phi));
-				vertices[3*vlt+1] = (float) (Math.sin(theta)*Math.sin(phi));
-				vertices[3*vlt+2] = (float) (Math.cos(phi));
+				int vlt = counter++;
+				float x = (float) (Math.cos(theta)*Math.sin(phi));
+				float y = (float) (Math.sin(theta)*Math.sin(phi));
+				float z = (float) (Math.cos(phi));
+				setVertex(vlt, x, y, z);
 				
-				normal.set(vertices[3*vlt], vertices[3*vlt+1], vertices[3*vlt+2]);
+				normal.set(x, y, z);
 				normal.normalize();
-				normals[3*vlt] = normal.x;
-				normals[3*vlt+1] = normal.y;
-				normals[3*vlt+2] = normal.z;
-				
-				counter++;
+				setNormal(vlt, normal.x, normal.y, normal.z);
 				
 				// right bottom vertex
-				int vrt = counter;
-				vertices[3*vrt] = (float) (Math.cos(theta_step)*Math.sin(phi));
-				vertices[3*vrt+1] = (float) (Math.sin(theta_step)*Math.sin(phi));
-				vertices[3*vrt+2] = (float) (Math.cos(phi));
+				int vrt = counter++;
+				x = (float) (Math.cos(theta_step)*Math.sin(phi));
+				y = (float) (Math.sin(theta_step)*Math.sin(phi));
+				z = (float) (Math.cos(phi));
+				setVertex(vrt, x, y, z);
 				
-				normal.set(vertices[3*vrt], vertices[3*vrt+1], vertices[3*vrt+2]);
+				normal.set(x, y, z);
 				normal.normalize();
-				normals[3*vrt] = normal.x;
-				normals[3*vrt+1] = normal.y;
-				normals[3*vrt+2] = normal.z;
-				
-				counter++;
+				setNormal(vrt, normal.x, normal.y, normal.z);
 				
 				// left top vertex
-				int vlb = counter;
-				vertices[3*vlb] = (float) (Math.cos(theta)*Math.sin(phi_step));
-				vertices[3*vlb+1] = (float) (Math.sin(theta)*Math.sin(phi_step));
-				vertices[3*vlb+2] = (float) (Math.cos(phi_step));
+				int vlb = counter++;
+				x = (float) (Math.cos(theta)*Math.sin(phi_step));
+				y = (float) (Math.sin(theta)*Math.sin(phi_step));
+				z = (float) (Math.cos(phi_step));
+				setVertex(vlb, x, y, z);
 				
-				normal.set(vertices[3*vlb], vertices[3*vlb+1], vertices[3*vlb+2]);
+				normal.set(x, y, z);
 				normal.normalize();
-				normals[3*vlb] = normal.x;
-				normals[3*vlb+1] = normal.y;
-				normals[3*vlb+2] = normal.z;
-				
-				counter++;
+				setNormal(vlb, normal.x, normal.y, normal.z);
 				
 				// right top vertex
-				int vrb = counter;
-				vertices[3*vrb] = (float) (Math.cos(theta_step)*Math.sin(phi_step));
-				vertices[3*vrb+1] = (float) (Math.sin(theta_step)*Math.sin(phi_step));
-				vertices[3*vrb+2] = (float) (Math.cos(phi_step));
+				int vrb = counter++;
+				x = (float) (Math.cos(theta_step)*Math.sin(phi_step));
+				y = (float) (Math.sin(theta_step)*Math.sin(phi_step));
+				z = (float) (Math.cos(phi_step));
+				setVertex(vrb, x, y, z);
 				
-				normal.set(vertices[3*vrb], vertices[3*vrb+1], vertices[3*vrb+2]);
+				normal.set(x, y, z);
 				normal.normalize();
-				normals[3*vrb] = normal.x;
-				normals[3*vrb+1] = normal.y;
-				normals[3*vrb+2] = normal.z;
+				setNormal(vrb, normal.x, normal.y, normal.z);
 				
-				counter++;
-				
-				triangles[triCounter++] = vlb;
-				triangles[triCounter++] = vrb;
-				triangles[triCounter++] = vlt;
-				
-				triangles[triCounter++] = vrb;
-				triangles[triCounter++] = vrt;
-				triangles[triCounter++] = vlt;
+				// setting the 2 triangles
+				setTriangle(triCounter++, vlb, vrb, vlt);
+				setTriangle(triCounter++, vrb, vrt, vlt);
 			}
 		}
-		
-		setMeshData(vertices, normals, triangles);
 	}
 
 	@Override
