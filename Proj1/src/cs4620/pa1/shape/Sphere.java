@@ -10,18 +10,75 @@ public class Sphere extends TriangleMesh
 	@Override
 	public void buildMesh(float tolerance) {
 		// TODO: (Problem 2) Fill in the code to create a sphere mesh.
-		// TODO: Right now same vertex is stored multiple times. Need to reduce them?
 		int numLongSteps = (int) (360/(180*(tolerance/5)));
 		int numLatSteps = (int) (180/(180*(tolerance/5)));
-		float step_t = 360f/numLongSteps;
-		float step_p = 180f/numLatSteps;
-		int numVertex = 4*numLongSteps*numLatSteps;
+		double step_t = 360./numLongSteps;
+		double step_p = 180./numLatSteps;
+		int numVertex = (1+numLatSteps)*(numLongSteps);
+//		int numVertex = (numLatSteps*numLongSteps*4);
 		
 		vertices = new float[numVertex*3];
 		normals = new float[numVertex*3];
 		triangles = new int[numLongSteps*numLatSteps*2*3];
 		
 		int counter = 0;
+		int triCounter = 0;
+		for (int lat = 0; lat <= numLatSteps; lat++) {
+			double phi = lat*step_p/180.*Math.PI;
+			for (int longi = 1; longi <= numLongSteps; longi++) {
+				double theta = longi*step_t/180.*Math.PI;
+				float x, y, z;
+				
+				Vector3f normal = new Vector3f();
+				
+				if (longi == 1) {
+					// first vertex of each row
+					x = (float) (Math.cos(0)*Math.sin(phi));
+					y = (float) (Math.sin(0)*Math.sin(phi));
+					z = (float) (Math.cos(phi));
+					setVertex(counter, x, y, z);
+					normal.set(x, y, z);
+					normal.normalize();
+					setNormal(counter, x, y, z);
+					counter++;
+				}
+				
+				// right now the program crashes, but if I change this line to
+				// (longi == numLongSteps-1) then it works, and the thing renders
+				// but it's missing a step at the end so the last strip of triangles
+				// look uneven.
+				if (longi == numLongSteps) {
+					// last iteration of the current latitude, doesn't need vertex
+					if (lat != 0) {
+						int tlv = counter - numLongSteps;
+						int trv = counter - numLongSteps - (numLongSteps - 1);
+						int blv = counter;
+						int brv = counter - (numLongSteps - 1);
+						setTriangle(triCounter++, tlv, trv, blv);
+						setTriangle(triCounter++, blv, brv, trv);
+					}
+				} else {
+					x = (float) (Math.cos(theta)*Math.sin(phi));
+					y = (float) (Math.sin(theta)*Math.sin(phi));
+					z = (float) (Math.cos(phi));
+					setVertex(counter, x, y, z);
+					normal.set(x, y, z);
+					normal.normalize();
+					setNormal(counter, x, y, z);
+					if (lat != 0) {
+						int tlv = counter - numLongSteps - 1;
+						int trv = counter - numLongSteps;
+						int blv = counter - 1;
+						int brv = counter;
+						setTriangle(triCounter++, tlv, trv, blv);
+						setTriangle(triCounter++, blv, brv, trv);
+					}
+					counter++;
+				}
+			}
+		}
+		
+/*		int counter = 0;
 		int triCounter = 0;
 		for (int lat = 0; lat < numLatSteps; lat++) {
 			for (int longi = 0; longi < numLongSteps; longi++) {
@@ -81,7 +138,7 @@ public class Sphere extends TriangleMesh
 				setTriangle(triCounter++, vlb, vrb, vlt);
 				setTriangle(triCounter++, vrb, vrt, vlt);
 			}
-		}
+		}*/
 	}
 
 	@Override
