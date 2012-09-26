@@ -112,12 +112,49 @@ public class Scene
 
 	public void render(GL2 gl)
 	{
-		// TODO: (Problem 3) Fill in the code to render the scene.		
+		// TODO: (Problem 3) Fill in the code to render the scene.
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		renderHelper(getSceneRoot(), gl, false);
+		
 	}
 
 	public void renderForPicking(GL2 gl)
 	{		
 		// TODO: (Problem 3) Fill in the code to render the scene for picking.
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		renderHelper(getSceneRoot(), gl, true);
+	}
+	
+	/*Render the scene recursively, starting from the current node*/
+	private void renderHelper(SceneNode node, GL2 gl, boolean forPicking) {
+		gl.glPushMatrix();
+		//Only need to do something if it is transformation node.
+		if (node instanceof TransformationNode) {
+			TransformationNode tNode = (TransformationNode) node;
+			//The transformation is TRzRyRxS(object), scaling first.
+			gl.glTranslatef(tNode.translation.x, tNode.translation.y, tNode.translation.z);
+			gl.glRotatef(tNode.rotation.z, 0f, 0f, 1f);
+			gl.glRotatef(tNode.rotation.y, 0f, 1f, 0f);
+			gl.glRotatef(tNode.rotation.x, 1f, 0f, 0f);
+			gl.glScalef(tNode.scaling.x, tNode.scaling.y, tNode.scaling.z);
+			
+			//Must render the object if needed.
+			if (tNode instanceof MeshNode) {
+				MeshNode mNode = (MeshNode) tNode;
+				if (!forPicking) {
+					mNode.draw(gl);
+				}
+				else {
+					mNode.drawForPicking(gl);
+				}
+			}
+		}
+		
+		for (int i = 0; i < node.getChildCount(); i++) {
+			renderHelper(node.getSceneNodeChild(i), gl, forPicking);
+		}
+		
+		gl.glPopMatrix();
 	}
 
 	/**
