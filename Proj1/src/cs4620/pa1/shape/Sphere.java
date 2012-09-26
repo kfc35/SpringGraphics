@@ -10,7 +10,6 @@ public class Sphere extends TriangleMesh
 	@Override
 	public void buildMesh(float tolerance) {
 		// TODO: (Problem 2) Fill in the code to create a sphere mesh.
-		// TODO: Right now same vertex is stored multiple times. Need to reduce them?
 		int numLongSteps = (int) (360/(180*(tolerance/5)));
 		int numLatSteps = (int) (180/(180*(tolerance/5)));
 		float step_t = 360f/numLongSteps;
