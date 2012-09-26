@@ -128,19 +128,19 @@ public class Scene
 	/*Render the scene recursively, starting from the current node*/
 	private void renderHelper(SceneNode node, GL2 gl, boolean forPicking) {
 		gl.glPushMatrix();
-		//Only need to do something if it is transformation node.
+		//Only need to do something if it is a transformation node.
 		if (node instanceof TransformationNode) {
 			TransformationNode tNode = (TransformationNode) node;
 			//The transformation is TRzRyRxS(object), scaling first.
 			gl.glTranslatef(tNode.translation.x, tNode.translation.y, tNode.translation.z);
-			gl.glRotatef(tNode.rotation.z, 0f, 0f, 1f);
-			gl.glRotatef(tNode.rotation.y, 0f, 1f, 0f);
-			gl.glRotatef(tNode.rotation.x, 1f, 0f, 0f);
+			gl.glRotatef(tNode.rotation.z, 0f, 0f, +1f);
+			gl.glRotatef(tNode.rotation.y, 0f, +1f, 0f);
+			gl.glRotatef(tNode.rotation.x, +1f, 0f, 0f);
 			gl.glScalef(tNode.scaling.x, tNode.scaling.y, tNode.scaling.z);
 			
 			//Must render the object if needed.
-			if (tNode instanceof MeshNode) {
-				MeshNode mNode = (MeshNode) tNode;
+			if (node instanceof MeshNode) {
+				MeshNode mNode = (MeshNode) node;
 				if (!forPicking) {
 					mNode.draw(gl);
 				}

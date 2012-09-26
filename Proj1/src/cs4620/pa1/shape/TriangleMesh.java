@@ -35,7 +35,7 @@ public abstract class TriangleMesh extends Mesh {
 	
 	public final void render(GL2 gl) {
 		// TODO: (Problem 1) Fill in the code to render the mesh.
-		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+		//gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		
 		gl.glBegin(GL2.GL_TRIANGLES);
 		
