@@ -1,0 +1,9 @@
+
+#version 120
+
+void main()
+{
+    // TODO: (Problem 1.1) Implement the vertex shader of the
+    // normal shader here.
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+}

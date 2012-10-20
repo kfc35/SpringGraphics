@@ -1,0 +1,21 @@
+
+#version 120
+
+// These values are set by the ShaderPhongMaterial class to
+// contain the object's material properties from the
+// left pane of the ProblemA2.java window.
+uniform vec4 ambient;
+uniform vec4 diffuse;
+uniform vec4 specular;
+uniform float shininess;
+
+// TODO: (Problem 1.2) Add any varying variables here to send
+// additional information to the fragment shader
+
+void main()
+{
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+
+    // TODO: (Problem 1.2) Implement the vertex shader for
+    // per-pixel Blinn-Phong here. 
+}
