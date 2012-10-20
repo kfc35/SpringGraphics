@@ -7,10 +7,17 @@ uniform vec4 diffuse;
 
 // TODO: (Problem 1.3) Add any "varying" variables to send information
 // to the fragment shader
+varying vec3 normal;
+varying vec4 position;
 
 void main()
 {
     // TODO: (Problem 1.3) Implement the vertex shader of the
     // toon quantize shader.
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    
+    /* Since this is per-pixel shading, we need to interpolate
+     * the normal*/
+    normal = normalize(gl_Normal);
+    position = gl_ModelViewMatrix * gl_Vertex;
 }

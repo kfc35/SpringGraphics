@@ -26,10 +26,10 @@ void main()
     // per-pixel Blinn-Phong here.
     
     /* Since this is per-pixel shading, we need to interpolate
-     * the normal and light props, not the color. 
+     * the normal, not the color. 
      * Therefore, the color calculations will be at the fragment 
      * level (as opposed to here at the vertices) */
     normal = normalize(gl_Normal);
-    position = gl_Vertex;
+    position = gl_ModelViewMatrix * gl_Vertex;
     
 }

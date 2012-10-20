@@ -23,7 +23,7 @@ void main()
     	gl_FragColor = vec4(perPixelColor, 1.0);
     }
     else { //perVertexShading
-    	// Merely use the interpolated
+    	// Merely use the interpolated color
     	gl_FragColor = vec4(interpolatedColor, 1.0);
     }
 }

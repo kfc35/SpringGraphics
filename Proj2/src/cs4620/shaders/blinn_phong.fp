@@ -30,11 +30,9 @@ void main()
     
     /* Calculate n dot l*/
     // for vectors in homogeneous coordinates, the last entry is a 0.
-    vec4 interpolatedNormalizedNormal = vec4(normalize(normal), 0);
-    vec4 vectorPosition = vec4(position.xyz, 0);
-    vec4 vectorLightPosition = vec4((gl_LightSource[0].position).xyz,
-    	0);
-    vec4 lightDirection = normalize(vectorLightPosition - vectorPosition);
+    vec3 interpolatedNormalizedNormal = normalize(normal);
+    vec3 vectorPosition = position.xyz;
+    vec3 lightDirection = normalize(gl_LightSource[0].position.xyz - vectorPosition);
     float nDotL = dot(interpolatedNormalizedNormal, lightDirection);
     
     if (nDotL > 0.0) {
@@ -44,8 +42,8 @@ void main()
     	/* The eye is at the origin in eye space, so must multiply
     	 * by the inverse of the ModelViewProjectionMatrix to get where the eye is*/
     	vec4 eyePosition = gl_ModelViewProjectionMatrixInverse * vec4(0, 0, 0, 1);
-    	vec4 eyeDirection = normalize(eyePosition - vectorPosition);
-    	vec4 halfVector = normalize(lightDirection + eyeDirection);
+    	vec3 eyeDirection = normalize(eyePosition.xyz - vectorPosition);
+    	vec3 halfVector = normalize(lightDirection + eyeDirection);
     	float nDotH = dot(interpolatedNormalizedNormal, halfVector);
     	vec4 specularLight = specular * gl_LightSource[0].specular *
     		pow((max(nDotH, 0.0)), shininess);
@@ -57,5 +55,5 @@ void main()
     	totalLight = ambientLight;
     }
     
-    gl_FragColor = vec4(totalLight);
+    gl_FragColor = totalLight;
 }
