@@ -12,10 +12,50 @@ uniform float shininess;
 // TODO: (Problem 1.2) Add the same varying variables
 // that are being set by the vertex shader
 
+/* Interpolated Normal from the vertex shader*/
+varying vec3 normal;
+/* Interpolated Position, which should be equal to the
+ * position you are calculating*/
+varying vec4 position;
+
 void main()
 {
     // TODO: (Problem 1.2) Implement the fragment shader for
     // per-pixel Blinn-Phong here.
     
-    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); // for now, just drawing purple
+    vec4 totalLight;
+    
+    //ambientLight = k_a * I_a
+    vec4 ambientLight = ambient * gl_LightSource[0].ambient;
+    
+    /* Calculate n dot l*/
+    // for vectors in homogeneous coordinates, the last entry is a 0.
+    vec4 interpolatedNormalizedNormal = vec4(normalize(normal), 0);
+    vec4 vectorPosition = vec4(position.xyz, 0);
+    vec4 vectorLightPosition = vec4((gl_LightSource[0].position).xyz,
+    	0);
+    vec4 lightDirection = normalize(vectorLightPosition - vectorPosition);
+    float nDotL = dot(interpolatedNormalizedNormal, lightDirection);
+    
+    if (nDotL > 0.0) {
+    	/** Need to calculate diffuse and specular lighting **/
+    	vec4 diffuseLight = diffuse * gl_LightSource[0].diffuse * nDotL;
+    	
+    	/* The eye is at the origin in eye space, so must multiply
+    	 * by the inverse of the ModelViewProjectionMatrix to get where the eye is*/
+    	vec4 eyePosition = gl_ModelViewProjectionMatrixInverse * vec4(0, 0, 0, 1);
+    	vec4 eyeDirection = normalize(eyePosition - vectorPosition);
+    	vec4 halfVector = normalize(lightDirection + eyeDirection);
+    	float nDotH = dot(interpolatedNormalizedNormal, halfVector);
+    	vec4 specularLight = specular * gl_LightSource[0].specular *
+    		pow((max(nDotH, 0.0)), shininess);
+    	
+    	totalLight = ambientLight + diffuseLight + specularLight;
+    }
+    else {
+    	// Only ambient light
+    	totalLight = ambientLight;
+    }
+    
+    gl_FragColor = vec4(totalLight);
 }

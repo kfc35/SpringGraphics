@@ -12,10 +12,24 @@ uniform float shininess;
 // TODO: (Problem 1.2) Add any varying variables here to send
 // additional information to the fragment shader
 
+// The normal vector, which will be interpolated at the fragment level
+varying vec3 normal;
+// Since the fragment shader does not allow you to get your
+// own position in the fragment, use an interpolated position
+varying vec4 position;
+
 void main()
 {
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
     // TODO: (Problem 1.2) Implement the vertex shader for
-    // per-pixel Blinn-Phong here. 
+    // per-pixel Blinn-Phong here.
+    
+    /* Since this is per-pixel shading, we need to interpolate
+     * the normal and light props, not the color. 
+     * Therefore, the color calculations will be at the fragment 
+     * level (as opposed to here at the vertices) */
+    normal = normalize(gl_Normal);
+    position = gl_Vertex;
+    
 }
