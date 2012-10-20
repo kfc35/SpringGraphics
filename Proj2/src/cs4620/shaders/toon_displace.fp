@@ -8,5 +8,5 @@ void main()
 {
     // TODO: (Problem 1.3) Implement the fragment shader of the
     // toon displace shader. This one should be straightforward :)
-    gl_FragColor = vec4(0.0,0.0,0.0,1);
+    gl_FragColor = vec4(0.0,0.0,0.0,1); //outlining is black, so black!
 }

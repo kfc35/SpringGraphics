@@ -2,6 +2,7 @@ package cs4620.pa2.scene;
 
 import java.util.Map;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import cs4620.pa2.material.GLPhongMaterial;
@@ -81,6 +82,16 @@ public class MeshNode extends TransformationNode
 			// and
 			//   mat.unuseDisplace(gl);
 			// to enable and disable the displace shader.
+			
+			mat.useDisplace(gl);
+			/*Orient the cull face to be the front face, 
+			 *which has vertices labeled counter clockwise*/
+			gl.glFrontFace(GL.GL_CCW);
+			gl.glCullFace(GL.GL_FRONT);
+			gl.glEnable(GL.GL_CULL_FACE);
+			getMesh().render(gl);
+			gl.glDisable(GL.GL_CULL_FACE);
+			mat.unuseDisplace(gl);
 		}
 		else
 		{
