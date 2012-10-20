@@ -15,6 +15,9 @@ import javax.swing.tree.TreePath;
 
 import org.yaml.snakeyaml.Yaml;
 
+import cs4620.pa2.scene.MeshNode;
+import cs4620.pa2.scene.SceneNode;
+import cs4620.pa2.scene.TransformationNode;
 import cs4620.pa2.material.Material;
 import cs4620.pa2.shape.Mesh;
 import cs4620.pa2.shape.Sphere;
@@ -87,11 +90,47 @@ public class Scene
 	public void render(GL2 gl)
 	{
 		// TODO PA1: (Problem 3) Fill in the code to render the scene.	
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		renderHelper(getSceneRoot(), gl, false);
 	}
 	
 	public void renderForPicking(GL2 gl)
 	{		
 		// TODO PA1: (Problem 3) Fill in the code to render the scene for picking.
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		renderHelper(getSceneRoot(), gl, true);
+	}
+	
+	/*Render the scene recursively, starting from the current node*/
+	private void renderHelper(SceneNode node, GL2 gl, boolean forPicking) {
+		gl.glPushMatrix();
+		//Only need to do something if it is a transformation node.
+		if (node instanceof TransformationNode) {
+			TransformationNode tNode = (TransformationNode) node;
+			//The transformation is TRzRyRxS(object), scaling first.
+			gl.glTranslatef(tNode.translation.x, tNode.translation.y, tNode.translation.z);
+			gl.glRotatef(tNode.rotation.z, 0f, 0f, +1f);
+			gl.glRotatef(tNode.rotation.y, 0f, +1f, 0f);
+			gl.glRotatef(tNode.rotation.x, +1f, 0f, 0f);
+			gl.glScalef(tNode.scaling.x, tNode.scaling.y, tNode.scaling.z);
+			
+			//Must render the object if needed.
+			if (node instanceof MeshNode) {
+				MeshNode mNode = (MeshNode) node;
+				if (!forPicking) {
+					mNode.draw(gl);
+				}
+				else {
+					mNode.drawForPicking(gl);
+				}
+			}
+		}
+		
+		for (int i = 0; i < node.getChildCount(); i++) {
+			renderHelper(node.getSceneNodeChild(i), gl, forPicking);
+		}
+		
+		gl.glPopMatrix();
 	}
 
 	public void setupLighting(GL2 gl)

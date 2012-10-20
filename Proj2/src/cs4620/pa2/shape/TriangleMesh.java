@@ -43,6 +43,23 @@ public abstract class TriangleMesh extends Mesh {
 	public final void render(GL2 gl)
 	{
 		// TODO PA1: (Problem 1) Fill in the code to render the mesh.
+		
+		gl.glBegin(GL2.GL_TRIANGLES);
+
+		// drawing normals and vertices of triangles
+		for (int i=0; i < triangles.length; i=i+3) {
+			int v1 = triangles[i];
+			int v2 = triangles[i+1];
+			int v3 = triangles[i+2];
+			gl.glNormal3f(normals[3*v1], normals[3*v1+1], normals[3*v1+2]);
+			gl.glVertex3f(vertices[3*v1], vertices[3*v1+1], vertices[3*v1+2]);
+			gl.glNormal3f(normals[3*v2], normals[3*v2+1], normals[3*v2+2]);
+			gl.glVertex3f(vertices[3*v2], vertices[3*v2+1], vertices[3*v2+2]);
+			gl.glNormal3f(normals[3*v3], normals[3*v3+1], normals[3*v3+2]);
+			gl.glVertex3f(vertices[3*v3], vertices[3*v3+1], vertices[3*v3+2]);
+		}
+
+		gl.glEnd();
 	}
 
 	public final void setMeshData(float[] vertices, float[] normals, int[] triangles)
