@@ -26,10 +26,11 @@ void main()
     // per-pixel Blinn-Phong here.
     
     /* Since this is per-pixel shading, we need to interpolate
-     * the normal, not the color. 
+     * the normal and position, not the color.
      * Therefore, the color calculations will be at the fragment 
-     * level (as opposed to here at the vertices) */
-    normal = normalize(gl_Normal);
+     * level (as opposed to here at the vertices). 
+     * Normal and position are in EYE COORDINATES */
+    normal = normalize(gl_NormalMatrix * gl_Normal);
     position = gl_ModelViewMatrix * gl_Vertex;
     
 }

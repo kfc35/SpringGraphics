@@ -19,8 +19,7 @@ void main()
     // Only calculate diffuse color.
     
     vec3 interpolatedNormalizedNormal = normalize(normal);
-    vec3 vectorPosition = position.xyz;
-    vec3 lightDirection = normalize(gl_LightSource[0].position.xyz - vectorPosition);
+    vec3 lightDirection = normalize(gl_LightSource[0].position.xyz - position.xyz);
     float nDotL = dot(interpolatedNormalizedNormal, lightDirection);
     
     // Quantize sin value
@@ -37,5 +36,5 @@ void main()
     	nDotL = 0.75;
     }
     
-    gl_FragColor = vec4(diffuse * gl_LightSource[0].diffuse * nDotL); // for now, just setting to teal
+    gl_FragColor = vec4(diffuse * gl_LightSource[0].diffuse * nDotL);
 }

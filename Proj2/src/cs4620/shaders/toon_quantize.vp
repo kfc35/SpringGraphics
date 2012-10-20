@@ -17,7 +17,7 @@ void main()
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
     
     /* Since this is per-pixel shading, we need to interpolate
-     * the normal*/
-    normal = normalize(gl_Normal);
+     * the normal and the position in EYE SPACE*/
+    normal = normalize(gl_NormalMatrix * gl_Normal);
     position = gl_ModelViewMatrix * gl_Vertex;
 }
