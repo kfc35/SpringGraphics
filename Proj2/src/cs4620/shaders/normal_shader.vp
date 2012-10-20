@@ -1,9 +1,15 @@
 
 #version 120
 
+varying vec3 color;
+
 void main()
 {
     // TODO: (Problem 1.1) Implement the vertex shader of the
     // normal shader here.
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    
+    // The color is calculated from the normal vector
+    // As a varying variable, it will be passed to the fragment shader interpolated.
+    color = vec3((gl_Normal.x + 1)/2, (gl_Normal.y + 1)/2, (gl_Normal.z + 1)/2);
 }
