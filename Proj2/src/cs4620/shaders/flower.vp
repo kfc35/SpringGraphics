@@ -17,6 +17,8 @@ uniform mat4 objToFrame;
 
 //TODO: (Problem 2) Put any "varying" variables here (hint: these
 // should be the same as your Blinn-Phong shader)
+varying vec3 normal;
+varying vec4 position;
 
 void main()
 {
@@ -32,5 +34,8 @@ void main()
 
     // TODO: (Problem 2) apply Blinn-Phong to the bent flower
     gl_Position = gl_ModelViewProjectionMatrix * bentObjectV;
+    /* Need normal and position in EYE space. basically copied from Prob 1*/
+    normal = normalize(gl_NormalMatrix * gl_Normal);
+    position = gl_ModelViewMatrix * gl_Vertex;
 }
 
