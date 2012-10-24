@@ -26,7 +26,7 @@ public class FlowerMaterial extends GLPhongMaterial {
 	
 	// TODO: (Problem 2) Declare any other variables you want to pass as
 	// uniforms to your vertex shader here
-	
+	private float R, phi;
 	
 	public FlowerMaterial()
 	{
@@ -76,6 +76,10 @@ public class FlowerMaterial extends GLPhongMaterial {
 			
 			// TODO: (Problem 2) Use L_x and L_y to calculate any other uniforms you
 			// want to send to the vertex shader
+			double theta = Math.atan(L_y/L_x);
+			phi = (float) ((Math.PI/2.0) - theta);
+			R = height/phi;
+			
 		}
 	}
 
@@ -132,6 +136,20 @@ public class FlowerMaterial extends GLPhongMaterial {
 				System.out.println("Flower shader is ignoring uniform \"shininess\"");
 			
 			// TODO: (Problem 2) Send any additional uniforms you calculated in setUniforms() to the shader
+			if (flowerProgram.getUniform("R") != null)
+				flowerProgram.getUniform("R").set1Float(R);
+			else
+				System.out.println("Flower shader is ignoring uniform \"R\"");
+			
+			if (flowerProgram.getUniform("phi") != null)
+				flowerProgram.getUniform("phi").set1Float(phi);
+			else
+				System.out.println("Flower shader is ignoring uniform \"phi\"");
+			
+			if (flowerProgram.getUniform("height") != null)
+				flowerProgram.getUniform("height").set1Float(flowerHeight);
+			else
+				System.out.println("Flower shader is ignoring uniform \"height\"");
 		}
 		else
 		{

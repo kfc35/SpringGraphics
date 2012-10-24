@@ -14,6 +14,9 @@ uniform mat4 frameToObj;
 uniform mat4 objToFrame;
 
 //TODO: (Problem 2) Put any additional uniforms for the shader here
+uniform float R;
+uniform float phi;
+uniform float height;
 
 //TODO: (Problem 2) Put any "varying" variables here (hint: these
 // should be the same as your Blinn-Phong shader)
@@ -27,6 +30,17 @@ void main()
     vec3 frameN = (objToFrame * vec4(gl_Normal, 0.0)).xyz;
 
     // TODO: (Problem 2) Bend the flower according to the figures
+    float PI = 3.14159265358979323846264;
+    float r = R - frameV.x;
+    float t = PI - (frameV.y*phi/height);
+    float x = R + r*cos(t);
+    float y = r*sin(t);
+    frameV = vec3(x, y, frameV.z);
+    
+    mat3 rotation = mat3(cos(-phi), sin(-phi), 0,
+    				-sin(-phi), cos(-phi), 0,
+    				0,		   0,		 1); // in column-major order
+    frameN = rotation * frameN;
 
     // Map bent vertex/normal back to object frame
     vec4 bentObjectV = frameToObj * vec4(frameV, 1.0);
