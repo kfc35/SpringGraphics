@@ -52,10 +52,13 @@ public abstract class TriangleMesh extends Mesh {
 			int v2 = triangles[i+1];
 			int v3 = triangles[i+2];
 			gl.glNormal3f(normals[3*v1], normals[3*v1+1], normals[3*v1+2]);
+			gl.glTexCoord2f(texCoords[2*v1], texCoords[2*v1+1]);
 			gl.glVertex3f(vertices[3*v1], vertices[3*v1+1], vertices[3*v1+2]);
 			gl.glNormal3f(normals[3*v2], normals[3*v2+1], normals[3*v2+2]);
+			gl.glTexCoord2f(texCoords[2*v2], texCoords[2*v2+1]);
 			gl.glVertex3f(vertices[3*v2], vertices[3*v2+1], vertices[3*v2+2]);
 			gl.glNormal3f(normals[3*v3], normals[3*v3+1], normals[3*v3+2]);
+			gl.glTexCoord2f(texCoords[2*v3], texCoords[2*v3+1]);
 			gl.glVertex3f(vertices[3*v3], vertices[3*v3+1], vertices[3*v3+2]);
 		}
 
