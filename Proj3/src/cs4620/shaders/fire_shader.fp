@@ -6,10 +6,27 @@ uniform float time;
 
 uniform vec3 scroll_speeds;
 
-varying vec3 pos;
+//varying vec3 pos;
 
 void main() {
 	// TODO: (Problem 2) Write this fragment shader;
 	
-	gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+	/* Calculate three sets of texture coordinates and sample from
+	 * the noise texture*/
+	vec2 texCoordOne = vec2(gl_TexCoord[0].s, 
+	gl_TexCoord[0].t + time * scroll_speeds.x);
+	vec4 sampleOne = texture2D(noise_texture, texCoordOne);
+	
+	vec2 texCoordTwo = vec2(gl_TexCoord[0].s, 
+	gl_TexCoord[0].t + time * scroll_speeds.y);
+	vec4 sampleTwo = texture2D(noise_texture, texCoordTwo);
+	
+	vec2 texCoordThree = vec2(gl_TexCoord[0].s, 
+	gl_TexCoord[0].t + time * scroll_speeds.z);
+	vec4 sampleThree = texture2D(noise_texture, texCoordThree);
+	
+	/* Average all the values and sample from fireTexture*/
+	//TODO: value wrapping?
+	vec4 avgSample = ((sampleOne + sampleTwo + sampleThree))/3.0;
+	gl_FragColor = texture2D(fire_texture, avgSample.st);
 }
