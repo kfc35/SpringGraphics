@@ -120,6 +120,7 @@ public class Texture2DMipmapped extends TextureTwoDim {
 		
 		/* gl knows to use linear interpolation for tex values and mipmap level*/
 		gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
-		//gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
+		// Magnification only uses linear - no sense to use mipmaps for magnification.
+		gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
 	}
 }
