@@ -1,7 +1,15 @@
 #version 120
 
+//per-pixel Blinn-Phong Shader to-be-interpolated values.
+varying vec3 normal;
+varying vec4 position;
+
 void main() {
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	
 	// TODO: (Problem 2) Write this vertex shader
+	
+	gl_TexCoord[0] = gl_MultiTexCoord0; //only expect one texture
+	normal = normalize(gl_NormalMatrix * gl_Normal);
+    position = gl_ModelViewMatrix * gl_Vertex;
 }
