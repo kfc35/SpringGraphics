@@ -109,6 +109,17 @@ public class Texture2DMipmapped extends TextureTwoDim {
 	@Override
 	public void setTextureParameters() {
 		// TODO PA2B: (Problem 4) Fill in code here to set the texture parameters to generate a mipmap
-
+		
+		/* Texture repeats itself in the x, y, and z directions*/
+		gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+		gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+		gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_R, GL2.GL_REPEAT);
+		
+		/* gl knows to generate mipmaps*/
+		gl.glGenerateMipmap(GL2.GL_TEXTURE_2D);
+		
+		/* gl knows to use linear interpolation for tex values and mipmap level*/
+		gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
+		//gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
 	}
 }
