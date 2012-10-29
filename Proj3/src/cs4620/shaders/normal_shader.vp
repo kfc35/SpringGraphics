@@ -1,0 +1,21 @@
+
+#version 120
+
+varying vec3 interpolatedColor; //for per-vertex shading
+varying vec3 interpolatedNormal; //for per-pixel shading
+
+void main()
+{
+    // TODO: (Problem 1.1) Implement the vertex shader of the
+    // normal shader here.
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    
+    
+    // The color is calculated from the normal vector
+    // As a varying variable, it will be passed to the fragment shader interpolated.
+    // I use a redundant variable, but it makes the code more understandable
+    vec3 normalizedNormal = normalize(gl_Normal);
+    interpolatedNormal = normalizedNormal;
+    interpolatedColor = vec3((normalizedNormal.x + 1)/2, 
+    	(normalizedNormal.y + 1)/2, (normalizedNormal.z + 1)/2);
+}
