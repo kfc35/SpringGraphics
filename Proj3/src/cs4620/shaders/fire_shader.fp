@@ -14,15 +14,15 @@ void main() {
 	/* Calculate three sets of texture coordinates and sample from
 	 * the noise texture*/
 	vec2 texCoordOne = vec2(gl_TexCoord[0].s, 
-	gl_TexCoord[0].t + time * scroll_speeds.x);
+	mod((gl_TexCoord[0].t + time * scroll_speeds.x), 1.0));
 	vec4 sampleOne = texture2D(noise_texture, texCoordOne);
 	
 	vec2 texCoordTwo = vec2(gl_TexCoord[0].s, 
-	gl_TexCoord[0].t + time * scroll_speeds.y);
+	mod((gl_TexCoord[0].t + time * scroll_speeds.y), 1.0));
 	vec4 sampleTwo = texture2D(noise_texture, texCoordTwo);
 	
 	vec2 texCoordThree = vec2(gl_TexCoord[0].s, 
-	gl_TexCoord[0].t + time * scroll_speeds.z);
+	mod((gl_TexCoord[0].t + time * scroll_speeds.z), 1.0));
 	vec4 sampleThree = texture2D(noise_texture, texCoordThree);
 	
 	/* Average all the values and sample from fireTexture*/
