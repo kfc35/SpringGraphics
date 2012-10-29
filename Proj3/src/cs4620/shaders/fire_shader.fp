@@ -26,7 +26,6 @@ void main() {
 	vec4 sampleThree = texture2D(noise_texture, texCoordThree);
 	
 	/* Average all the values and sample from fireTexture*/
-	//TODO: value wrapping?
 	vec4 avgSample = ((sampleOne + sampleTwo + sampleThree))/3.0;
 	gl_FragColor = texture2D(fire_texture, avgSample.st);
 }
