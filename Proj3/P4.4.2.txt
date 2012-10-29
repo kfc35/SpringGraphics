@@ -1,0 +1,10 @@
+1) 
+MIP-map level 0 : original texture img with resolution
+  1024 px x 1024 px= 2^10 x 2^10
+MIP-map level 1: 512 px x 512 px = 2^9 x 2^9
+...
+MIP-map level i: 2^(10 - i) x 2^(10 - i)
+...
+MIP-map level 10: 1 px x 1 px = 2^(10-10) x 2^(10-10) = 2^0 x 2^0
+
+Total number of levels: 11
