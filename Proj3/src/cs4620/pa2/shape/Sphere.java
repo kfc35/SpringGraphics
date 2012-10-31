@@ -15,45 +15,49 @@ public class Sphere extends TriangleMesh {
 		int numLatSteps = (int) (180/(180*(tolerance/5)));
 		double step_t = 360./numLongSteps;
 		double step_p = 180./numLatSteps;
-		int numVertex = (1+numLatSteps)*(numLongSteps);
+		int numVertex = (1+numLatSteps)*(numLongSteps+1);
 		
 		vertices = new float[numVertex*3];
 		normals = new float[numVertex*3];
 		triangles = new int[numLongSteps*numLatSteps*2*3];
+		texCoords = new float[numVertex*2];
 		
 		int counter = 0;
 		int triCounter = 0;
 		for (int lat = 0; lat <= numLatSteps; lat++) {
 			double phi = lat*step_p/180.*Math.PI;
-			for (int longi = 1; longi <= numLongSteps; longi++) {
+			float texCoordY = lat*1.0f/numLatSteps;
+			for (int longi = 0; longi <= numLongSteps; longi++) {
 				double theta = longi*step_t/180.*Math.PI;
+				float texCoordX = longi*1.0f/numLongSteps;
 				float x, y, z;
 				
 				Vector3f normal = new Vector3f();
 				
-				if (longi == 1) {
-					// first vertex of each row
-					x = (float) (Math.cos(0)*Math.sin(phi));
-					y = (float) (Math.sin(0)*Math.sin(phi));
-					z = (float) (Math.cos(phi));
-					setVertex(counter, x, y, z);
-					normal.set(x, y, z);
-					normal.normalize();
-					setNormal(counter, normal.x, normal.y, normal.z);
-					counter++;
-				}
+//				if (longi == 1) {
+//					// first vertex of each row
+//					x = (float) (Math.cos(0)*Math.sin(phi));
+//					y = (float) (Math.sin(0)*Math.sin(phi));
+//					z = (float) (Math.cos(phi));
+//					setVertex(counter, x, y, z);
+//					normal.set(x, y, z);
+//					normal.normalize();
+//					setNormal(counter, normal.x, normal.y, normal.z);
+//					// TODO: set texCoords
+//					counter++;
+//				}
 				
-				if (longi == numLongSteps) {
-					// last iteration of the current latitude, doesn't need vertex
-					if (lat != 0) {
-						int tlv = counter - 1 - numLongSteps;
-						int trv = counter - 1 - numLongSteps - (numLongSteps - 1);
-						int blv = counter - 1;
-						int brv = counter - 1 - (numLongSteps - 1);
-						setTriangle(triCounter++, tlv, trv, blv);
-						setTriangle(triCounter++, blv, brv, trv);
-					}
-				} else {
+//				if (longi == numLongSteps) {
+//					// last iteration of the current latitude, doesn't need vertex
+//					if (lat != 0) {
+//						int tlv = counter - 1 - numLongSteps;
+//						int trv = counter - 1 - numLongSteps - (numLongSteps - 1);
+//						int blv = counter - 1;
+//						int brv = counter - 1 - (numLongSteps - 1);
+//						setTriangle(triCounter++, tlv, trv, blv);
+//						setTriangle(triCounter++, blv, brv, trv);
+//					}
+//				} else {
 					x = (float) (Math.cos(theta)*Math.sin(phi));
 					y = (float) (Math.sin(theta)*Math.sin(phi));
 					z = (float) (Math.cos(phi));
@@ -61,16 +65,17 @@ public class Sphere extends TriangleMesh {
 					normal.set(x, y, z);
 					normal.normalize();
 					setNormal(counter, normal.x, normal.y, normal.z);
-					if (lat != 0) {
-						int tlv = counter - numLongSteps - 1;
-						int trv = counter - numLongSteps;
+					setTexCoord(counter, texCoordX, texCoordY);
+					if (lat != 0 && longi != 0) {
+						int tlv = counter - numLongSteps - 2;
+						int trv = counter - numLongSteps - 1;
 						int blv = counter - 1;
 						int brv = counter;
 						setTriangle(triCounter++, tlv, trv, blv);
 						setTriangle(triCounter++, blv, brv, trv);
 					}
 					counter++;
-				}
+//				}
 			}
 		}
 	}
