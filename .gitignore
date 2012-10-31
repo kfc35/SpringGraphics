@@ -11,7 +11,8 @@
 
 # Proj specific files
 ###############
-*/data
+Proj1/data
+Proj2/data
 */icons
 */lib
 
