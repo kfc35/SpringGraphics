@@ -361,8 +361,10 @@ public class ProblemB123 extends JFrame implements GLSceneDrawer,
 		gl.glEnable(GL2.GL_NORMALIZE);
 
 		// Cull back faces.
-		gl.glEnable(GL2.GL_CULL_FACE);
-		gl.glCullFace(GL2.GL_BACK);
+		// TODO: kfc35 changed this statement, explained in readme.
+		gl.glDisable(GL2.GL_CULL_FACE);
+		//gl.glEnable(GL2.GL_CULL_FACE);
+		//gl.glCullFace(GL2.GL_BACK);
 
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
