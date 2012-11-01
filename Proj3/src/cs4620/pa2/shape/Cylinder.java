@@ -45,7 +45,7 @@ public class Cylinder extends TriangleMesh
 		int sTriCounter = numSteps*2;
 		for (int i = 1; i <= numSteps; i++) {
 			double theta = i*step/180*Math.PI;
-			float sideTexX = i*1f/(numSteps*1f);
+			float sideTexX = 1f-(i*1f/(numSteps*1f));
 			float x, z;
 
 			if (i == 1) {
@@ -64,10 +64,10 @@ public class Cylinder extends TriangleMesh
 				// side
 				setVertex(tSideCounter, x, 1f, z);
 				setNormal(tSideCounter, x, 0f, z);
-				setTexCoord(tSideCounter, 0f, 1f);
+				setTexCoord(tSideCounter, 1f, 1f);
 				setVertex(bSideCounter, x, -1f, z);
 				setNormal(bSideCounter, x, 0f, z);
-				setTexCoord(bSideCounter, 0f, 0f);
+				setTexCoord(bSideCounter, 1f, 0f);
 				
 				tCounter++;
 				bCounter++;
