@@ -49,6 +49,15 @@ public class OrthographicCamera implements Camera {
 	    //   1. set basisW to be parallel to projection normal but pointing to the opposite direction.
 	    //   2. set basisU to be parallel to the image's X-axis.
 	    //   3. set basisV to be parallel to the image's Y-axis.
+    	Vector3 w = new Vector3(-viewDir.x, -viewDir.y, -viewDir.z);
+    	w.normalize();
+    	basisW.set(w);
+    	
+    	Vector3 v = new Vector3(viewUp);
+    	v.normalize();
+    	basisV.set(v);
+    	
+    	basisU.cross(basisV, basisW);
 	    
 	    initialized = true;
     }
@@ -66,7 +75,16 @@ public class OrthographicCamera implements Camera {
 		if (!initialized) initView();
 	    
 	    // TODO(A): fill in this function.
+		// calculating origin of ray
+		Vector3 x = new Vector3(basisU);
+		x.scale((inS-0.5)*viewWidth);
+		Vector3 y = new Vector3(basisV);
+		y.scale((inT-0.5)*viewHeight);
+		Point3 origin = new Point3(viewPoint);
+		origin.add(x);
+		origin.add(y);
 		
-		
+		// direction is just parallel to viewDir
+		outRay.set(origin, new Vector3(viewDir));
 	}
 }
