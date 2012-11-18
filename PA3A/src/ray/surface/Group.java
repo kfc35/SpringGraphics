@@ -36,12 +36,28 @@ public class Group extends Surface {
     // TODO(A): Compute tMat, tMatInv, tMatTInv using transformMat.
     // Hint: We apply the transformation from bottom up the tree. 
     // i.e. The child's transformation will be applied to objects before its parent's.
-
-
+	tMat = new Matrix4();
+	tMat.rightCompose(cMat); 
+	tMat.rightCompose(transformMat); //tMat = cMat * transformMat
+	
+	tMatInv = new Matrix4();
+	tMatInv.leftCompose(cMatInv);
+	transformMat.invert();
+	tMatInv.leftCompose(transformMat); // tMatInv = transformMatInv * cMatInv
+	//tMat * tMatInv = tMatInv * tMat = I
+	
+	tMatTInv = new Matrix4();
+	//tMatT = (cMat * transformMat)^T = transformMatT * cMatT
+	tMatTInv.rightCompose(cMatTInv);
+	transformMat.transpose(); //inverse then transpose = transpose then inverse
+	tMatTInv.rightCompose(transformMat); //tMatTInv = cMatTInv * transformMatTInv
+	//tMatTInv * tMatT = tMatT * tMatTInv = I
+	
 
     // TODO(A): Call setTransformation(tMat, tMatInv, tMatTInv) on each of the children.
     for (Iterator<Surface> iter = objs.iterator(); iter.hasNext();) {
-
+    	Surface s = iter.next();
+    	s.setTransformation(tMat, tMatInv, tMatTInv);
     }
     computeBoundingBox();
   }
@@ -54,10 +70,22 @@ public class Group extends Surface {
   
   public void setRotate(Point3 R) {
     // TODO(A): add rotation to transformMat
+	  
+	//T_new = T * Z * Y * X
+	tmp.setRotate(R.z, new Vector3(0.0,0.0,1.0));
+	transformMat.rightCompose(tmp);
+	
+	tmp.setRotate(R.y, new Vector3(0.0,1.0,0.0));
+	transformMat.rightCompose(tmp);
+	
+	tmp.setRotate(R.x, new Vector3(1.0,0.0,0.0));
+	transformMat.rightCompose(tmp);
   }
   
   public void setScale(Vector3 S) { 
     // TODO(A): add scale to transformMat
+	tmp.setScale(S);
+	transformMat.rightCompose(tmp);
   }
   
   public void addSurface(Surface a) {
