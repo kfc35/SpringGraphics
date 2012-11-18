@@ -13,7 +13,11 @@ import ray.Workspace;
 import ray.accel.AccelStruct;
 import ray.accel.NaiveAccelStruct;
 import ray.camera.Camera;
+import ray.light.Light; //kfc35 - imported this for shadeRay
+import ray.material.Material; //kfc35 - imported this for shadeRay
 import ray.math.Color;
+import ray.math.Point3;
+import ray.math.Vector3; //kfc35 - imported this for shadeRay
 import ray.surface.Surface;
 
 /**
@@ -113,7 +117,9 @@ public class BasicRayTracer extends RayTracer {
 
 		// TODO(A): Find the first intersection of "ray" with the scene.
 		// Record intersection in intersectionRecord. If it doesn't hit anything, just return.
-
+		if (!scene.getFirstIntersection(intersectionRecord, ray)) {
+			return;
+		}
 		
 
 		// TODO(A): Compute the color of the intersection point.
@@ -130,6 +136,39 @@ public class BasicRayTracer extends RayTracer {
 		//    shadowed.
 		// 8) If the intersection point is not shadowed, scale the light intensity
 		//    by the BRDF value and add it to outColor.	
+		
+		// 1)
+		Material material = intersectionRecord.surface.getMaterial();
+		// 2)
+		if (!material.canInteractWithLight()) {
+			return;
+		}
+		// 3)
+		Vector3 intersectionPoint = new Vector3(intersectionRecord.location);
+		Vector3 outgoing = new Vector3(ray.origin);
+		outgoing.sub(intersectionPoint);
+		// 4)
+		for (Iterator<Light> iter = scene.getLights().iterator(); iter.hasNext();) {
+			Light light = iter.next();
+			// 5)
+			Vector3 incoming = new Vector3(light.position);
+			incoming.sub(intersectionPoint);
+			
+			// 6)
+			Color BDRF = new Color();
+			material.evaluate(BDRF, intersectionRecord, incoming, outgoing);
+			
+			// 7)
+			if (!BDRF.isZero()) {
+				Ray shadowRay = new Ray();
+				// 8)
+				if (!isShadowed(scene, light, intersectionRecord, shadowRay)) {
+					Color intensity = new Color(light.intensity);
+					intensity.scale(BDRF);
+					outColor.add(BDRF);
+				}
+			}
+		}
 	}
 
 	@Override
