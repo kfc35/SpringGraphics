@@ -45,6 +45,36 @@ public class Phong extends Material {
 	@Override
 	public void evaluate(Color value, IntersectionRecord record, Vector3 incoming, Vector3 outgoing) {
 		// TODO(A): Fill in this function.
+		
+		//normalize everything
+		Vector3 normal = new Vector3(record.normal);
+		normal.normalize();
+		Vector3 incomingNormalized = new Vector3(incoming);
+		incomingNormalized.normalize();
+		Vector3 outgoingNormalized = new Vector3(outgoing);
+		outgoingNormalized.normalize();
+		
+		double nDotIncoming = normal.dot(incomingNormalized);
+		if (nDotIncoming < 0.0) {
+			value.set(0.0);
+		}
+		else {
+			//kd * max(ndotincoming, 0.0)
+			Color diff = new Color(diffuseColor);
+			diff.scale(nDotIncoming); //nDotIncoming >= 0.0
+			
+			//ks * (max(ndothalf, 0.0)^exponent)
+			Vector3 halfVector = new Vector3(incomingNormalized);
+			halfVector.add(outgoingNormalized);
+			halfVector.normalize();
+			Color spec = new Color(specularColor);
+			spec.scale(Math.pow(Math.max(normal.dot(halfVector), 0.0), exponent));
+			
+			Color toSet = new Color(diff);
+			toSet.add(spec);
+			
+			value.set(toSet);
+		}
 	}
 
 	/**

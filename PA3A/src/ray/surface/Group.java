@@ -42,15 +42,18 @@ public class Group extends Surface {
 	
 	tMatInv = new Matrix4();
 	tMatInv.leftCompose(cMatInv);
-	transformMat.invert();
-	tMatInv.leftCompose(transformMat); // tMatInv = transformMatInv * cMatInv
+	Matrix4 transformMatInv = new Matrix4(transformMat);
+	transformMatInv.invert();
+	tMatInv.leftCompose(transformMatInv); // tMatInv = transformMatInv * cMatInv
 	//tMat * tMatInv = tMatInv * tMat = I
 	
 	tMatTInv = new Matrix4();
-	//tMatT = (cMat * transformMat)^T = transformMatT * cMatT
 	tMatTInv.rightCompose(cMatTInv);
-	transformMat.transpose(); //inverse then transpose = transpose then inverse
-	tMatTInv.rightCompose(transformMat); //tMatTInv = cMatTInv * transformMatTInv
+	Matrix4 transformMatTInv = new Matrix4(transformMat);
+	transformMatTInv.invert();
+	transformMatTInv.transpose(); //inverse then transpose = transpose then inverse
+	tMatTInv.rightCompose(transformMatTInv); //tMatTInv = cMatTInv * transformMatTInv
+	//tMatT = (cMat * transformMat)^T = transformMatT * cMatT
 	//tMatTInv * tMatT = tMatT * tMatTInv = I
 	
 

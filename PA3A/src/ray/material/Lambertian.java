@@ -41,6 +41,14 @@ public class Lambertian extends Material {
 	@Override
 	public void evaluate(Color value, IntersectionRecord record, Vector3 incoming, Vector3 outgoing) {
 		// TODO(A): Fill in this function.
+		Vector3 normal = new Vector3(record.normal);
+		normal.normalize();
+		Vector3 incomingNormalized = new Vector3(incoming);
+		incomingNormalized.normalize();
+		// kd * max(n dot incoming, 0)
+		Color toSet = new Color(diffuseColor);
+		toSet.scale(Math.max(normal.dot(incomingNormalized), 0.0));
+		value.set(toSet);
 	}
 
 	/**
