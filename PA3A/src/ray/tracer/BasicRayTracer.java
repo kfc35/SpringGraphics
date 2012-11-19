@@ -74,7 +74,7 @@ public class BasicRayTracer extends RayTracer {
 
 				// TODO(A): Compute the "ray," 
 				//          and call shadeRay on it to get the ray's color.
-				cam.getRay(ray, x*1.0/width, y*1.0/height);
+				cam.getRay(ray, (x+0.5)/width, (y+0.5)/height); // +0.5 for center of pixel
 				shadeRay(rayColor, scene, ray, work);
 				
 				pixelColor.set(rayColor);
