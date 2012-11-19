@@ -61,14 +61,14 @@ public class Phong extends Material {
 		else {
 			//kd * max(ndotincoming, 0.0)
 			Color diff = new Color(diffuseColor);
-			diff.scale(nDotIncoming); //nDotIncoming >= 0.0
+			diff.scale(Math.max(nDotIncoming, 0.0)); //nDotIncoming >= 0.0
 			
 			//ks * (max(ndothalf, 0.0)^exponent)
 			Vector3 halfVector = new Vector3(incomingNormalized);
 			halfVector.add(outgoingNormalized);
 			halfVector.normalize();
 			Color spec = new Color(specularColor);
-			spec.scale(Math.pow(Math.max(normal.dot(halfVector), 0.0), exponent));
+			spec.scale((Math.pow(Math.max(normal.dot(halfVector), 0.0), exponent)));
 			
 			Color toSet = new Color(diff);
 			toSet.add(spec);

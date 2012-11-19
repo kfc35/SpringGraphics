@@ -147,12 +147,14 @@ public class BasicRayTracer extends RayTracer {
 		Vector3 intersectionPoint = new Vector3(intersectionRecord.location);
 		Vector3 outgoing = new Vector3(ray.origin);
 		outgoing.sub(intersectionPoint);
+		//outgoing.normalize();
 		// 4)
 		for (Iterator<Light> iter = scene.getLights().iterator(); iter.hasNext();) {
 			Light light = iter.next();
 			// 5)
 			Vector3 incoming = new Vector3(light.position);
 			incoming.sub(intersectionPoint);
+			//incoming.normalize();
 			
 			// 6)
 			Color BDRF = new Color();
