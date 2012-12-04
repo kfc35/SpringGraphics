@@ -69,7 +69,8 @@ public class Glazed extends Material {
 		//Fresnel Coefficient
 		//r_0 + (1 - r_0)(1 - cos(theta))^5
 		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
-		value.scale(r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0));
+		//SCALE COLOR BY 1.0 - FRESNEL
+		value.scale(1.0 - (r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0)));
 	}
 
 	/**
@@ -125,13 +126,13 @@ public class Glazed extends Material {
 		toReturn[0] = new RayRecord();
 		toReturn[0].ray.start = 0;
 		toReturn[0].ray.end = Double.POSITIVE_INFINITY;
+		//starts at the intersection point
 		toReturn[0].ray.set(record.location, reflectedRay);
 		
 		//Fresnel Coefficient
 		//r_0 + (1 - r_0)(1 - cos(theta))^5
 		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
 		toReturn[0].factor.set(r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0));
-		
 		
 		return toReturn;
 	}
