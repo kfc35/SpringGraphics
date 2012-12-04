@@ -63,10 +63,13 @@ public class Triangle extends Surface {
    * @return true if the surface intersects the ray
    */
   public boolean intersect(IntersectionRecord outRecord, Ray rayIn) {
-    // TODO(B): fill in this function.
+	// TODO(B): fill in this function.
     // Hint: This object can be transformed by a transformation matrix.
     // So the rayIn needs to be processed so that it is in the same coordinate as the object.
-    
+	  Ray ray = untransformRay(rayIn);
+	  
+	  
+	  
     return false;
   }
 
