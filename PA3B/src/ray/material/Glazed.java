@@ -40,7 +40,7 @@ public class Glazed extends Material {
 		// TODO(B): fill in this function.
 		substrate.evaluate(value, record, incoming, outgoing);
 		
-		//scale the value by Fresnel Coeff... which I have to compute again.
+		//Calculate Fresnel Coeff using Schlick's Approx
 		Vector3 outgoingNorm = new Vector3(outgoing);
 		outgoingNorm.normalize();
 		
@@ -49,8 +49,7 @@ public class Glazed extends Material {
 		
 		//Project outgoing ray to normal
 		double projection = outgoingNorm.dot(normalNorm);
-		
-		//Fresnel Coefficient using Schlick's Approx
+
 		double n_1, n_2;
 		if (projection > 0) { //outgoing is outside the material
 			n_1 = 1.0;
@@ -65,12 +64,14 @@ public class Glazed extends Material {
 		}
 		
 		double r_0 = Math.pow(((n_2 - n_1)/(n_2 + n_1)), 2.0);
-		
 		//Fresnel Coefficient
 		//r_0 + (1 - r_0)(1 - cos(theta))^5
 		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
+		double fresnel = r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0);
+		
+		
 		//SCALE COLOR BY 1.0 - FRESNEL
-		value.scale(1.0 - (r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0)));
+		value.scale(1.0 - fresnel);
 	}
 
 	/**
@@ -115,6 +116,10 @@ public class Glazed extends Material {
 		}
 		
 		double r_0 = Math.pow(((n_2 - n_1)/(n_2 + n_1)), 2.0);
+		//Fresnel Coefficient
+		//r_0 + (1 - r_0)(1 - cos(theta))^5
+		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
+		double fresnel = r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0);
 		
 		//Reflected Ray = 2 * normalNorm * (normalNorm dot outgoingNorm) - outgoingNorm
 		Vector3 reflectedRay = new Vector3(normalNorm);
@@ -129,10 +134,7 @@ public class Glazed extends Material {
 		//starts at the intersection point
 		toReturn[0].ray.set(record.location, reflectedRay);
 		
-		//Fresnel Coefficient
-		//r_0 + (1 - r_0)(1 - cos(theta))^5
-		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
-		toReturn[0].factor.set(r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0));
+		toReturn[0].factor.set(fresnel);
 		
 		return toReturn;
 	}
