@@ -40,8 +40,36 @@ public class Glazed extends Material {
 		// TODO(B): fill in this function.
 		substrate.evaluate(value, record, incoming, outgoing);
 		
-		// TODO scale the value by Fresnel Coeff... which I have to compute again?
-		//value.scale();
+		//scale the value by Fresnel Coeff... which I have to compute again.
+		Vector3 outgoingNorm = new Vector3(outgoing);
+		outgoingNorm.normalize();
+		
+		Vector3 normalNorm = record.normal;
+		normalNorm.normalize();
+		
+		//Project outgoing ray to normal
+		double projection = outgoingNorm.dot(normalNorm);
+		
+		//Fresnel Coefficient using Schlick's Approx
+		double n_1, n_2;
+		if (projection > 0) { //outgoing is outside the material
+			n_1 = 1.0;
+			n_2 = refractiveIndex;
+		}
+		else if (projection < 0) { //outgoing is inside the material
+			n_1 = refractiveIndex;
+			n_2 = 1.0;
+		}
+		else { //if this happens, there's no scaling component?
+			return;
+		}
+		
+		double r_0 = Math.pow(((n_2 - n_1)/(n_2 + n_1)), 2.0);
+		
+		//Fresnel Coefficient
+		//r_0 + (1 - r_0)(1 - cos(theta))^5
+		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
+		value.scale(r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0));
 	}
 
 	/**
@@ -69,7 +97,25 @@ public class Glazed extends Material {
 		//Project outgoing ray to normal
 		double projection = outgoingNorm.dot(normalNorm);
 		
-		//Reflected Ray = 2 * N * (N dot outgoingNorm) - outgoing
+		//Fresnel Coefficient using Schlick's Approx
+		double n_1, n_2;
+		if (projection > 0) { //outgoing is outside the material
+			n_1 = 1.0;
+			n_2 = refractiveIndex;
+		}
+		else if (projection < 0) { //outgoing is inside the material
+			n_1 = refractiveIndex;
+			n_2 = 1.0;
+		}
+		else { //this should never happen
+			//if the outgoing and the normal are perp., then the
+			//outgoing is implied not to intersect the surface, contradiction!
+			return null;
+		}
+		
+		double r_0 = Math.pow(((n_2 - n_1)/(n_2 + n_1)), 2.0);
+		
+		//Reflected Ray = 2 * normalNorm * (normalNorm dot outgoingNorm) - outgoingNorm
 		Vector3 reflectedRay = new Vector3(normalNorm);
 		reflectedRay.scale(2.0);
 		reflectedRay.scale(projection);
@@ -77,11 +123,15 @@ public class Glazed extends Material {
 		
 		RayRecord[] toReturn = new RayRecord[1];
 		toReturn[0] = new RayRecord();
+		toReturn[0].ray.start = 0;
+		toReturn[0].ray.end = Double.POSITIVE_INFINITY;
 		toReturn[0].ray.set(record.location, reflectedRay);
-		// don't set start and end...
 		
 		//Fresnel Coefficient
-		//toReturn[0].factor = 
+		//r_0 + (1 - r_0)(1 - cos(theta))^5
+		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
+		toReturn[0].factor.set(r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0));
+		
 		
 		return toReturn;
 	}
