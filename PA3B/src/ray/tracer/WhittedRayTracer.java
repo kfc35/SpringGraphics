@@ -7,12 +7,16 @@ import java.util.List;
 import ray.Image;
 import ray.IntersectionRecord;
 import ray.Ray;
+import ray.RayRecord;
 import ray.Scene;
 import ray.Workspace;
 import ray.accel.AccelStruct;
 import ray.accel.Bvh;
 import ray.camera.Camera;
+import ray.light.Light;
+import ray.material.Material;
 import ray.math.Color;
+import ray.math.Vector3;
 import ray.surface.Surface;
 
 public class WhittedRayTracer extends RayTracer {	  
@@ -110,7 +114,9 @@ public class WhittedRayTracer extends RayTracer {
 		outColor.set(0, 0, 0);
 		
 		// TODO(B): Return immediately if depth is greater than 12.
-
+		if (depth > 12) {
+			return ;
+		}
 
 
 		// Rename all the workspace entries to avoid field accesses
@@ -120,7 +126,59 @@ public class WhittedRayTracer extends RayTracer {
 		// TODO(B): Fill in the part of BasicRayTracer.shadeRay
 		//          from getting the first intersection onward.
 		
+		if (!scene.getFirstIntersection(intersectionRecord, ray)) {
+			return;
+		}
 		
+		// TODO(A): Compute the color of the intersection point.
+		// 1) Get the material from the intersection record.
+		// 2) Check whether the material can interact directly with light.
+		//    If not, do nothing.
+		// 3) Compute the direction of outgoing light, by subtracting the
+		//	  intersection point from the origin of the ray.
+		// 4) Loop through each light in the scene.
+		// 5) For each light, compute the incoming direction by subtracting
+		//    the intersection point from the light's position.
+		// 6) Compute the BRDF value by calling the evaluate method of the material. 
+		// 7) If the BRDF is not zero, check whether the intersection point is
+		//    shadowed.
+		// 8) If the intersection point is not shadowed, scale the light intensity
+		//    by the BRDF value and add it to outColor.	
+
+		// 1)
+		Material material = intersectionRecord.surface.getMaterial();
+		// 2)
+		if (!material.canInteractWithLight()) {
+			return;
+		}
+		// 3)
+		Vector3 intersectionPoint = new Vector3(intersectionRecord.location);
+		Vector3 outgoing = new Vector3(ray.origin);
+		outgoing.sub(intersectionPoint);
+		//outgoing.normalize();
+		// 4)
+		for (Iterator<Light> iter = scene.getLights().iterator(); iter.hasNext();) {
+			Light light = iter.next();
+			// 5)
+			Vector3 incoming = new Vector3(light.position);
+			incoming.sub(intersectionPoint);
+			//incoming.normalize();
+
+			// 6)
+			Color BDRF = new Color();
+			material.evaluate(BDRF, intersectionRecord, incoming, outgoing);
+
+			// 7)
+			if (!BDRF.isZero()) {
+				Ray shadowRay = new Ray();
+				// 8)
+				if (!isShadowed(scene, light, intersectionRecord, shadowRay)) {
+					Color intensity = new Color(light.intensity);
+					intensity.scale(BDRF);
+					outColor.add(intensity);
+				}
+			}
+		}
 		
 		// TODO(B): Recursively trace rays due to perfectly specular components.
 		// 1) Check whether the material has perfectly specular components.
@@ -137,10 +195,41 @@ public class WhittedRayTracer extends RayTracer {
 		// 7) Scale the resulting ray color with the scaling factor of the specular ray,
 		//    and add it to the output color.
 		
-		
+		// 1)
+		if (material.hasPerfectlySpecularComponent()) {
+			// 2)
+			RayRecord[] records = material.getIncomingSpecularRays(intersectionRecord, ray.direction);
+			// 3)
+			for (int i = 0; i < records.length; i++) {
+				Ray specRay = records[i].ray;
+				if (!records[i].factor.isZero() && records[i].factor.b > 0.0 &&
+						records[i].factor.g > 0.0 && records[i].factor.r > 0.0) {
+					// 4)
+					double dot = specRay.direction.dot(intersectionRecord.normal);
+					// 5)
+					Color absorp = new Color();
+					if (dot < 0) {
+						//ray is traveling inside, so the ray will travel outside next
+						absorp.set(intersectionRecord.surface.getOutsideAbsorption());
+					}
+					else if (dot > 0) {
+						absorp.set(intersectionRecord.surface.getInsideAbsorption());
+					}
+					// 6)
+					Color outColorRec = new Color();
+					shadeRay(outColorRec, scene, ray, workspace, absorp, depth + 1);
+					
+					// 7)
+					outColorRec.scale(records[i].factor);
+					outColor.add(outColorRec);
+				}
+			}
+		}
 		
 		// TODO(B): Compute the distance that the ray travels and attenuate
 		//          the output color by the absorption according to Beer's law.
+		
+		//TODO calculate distance...
 	}
 
 	@Override
