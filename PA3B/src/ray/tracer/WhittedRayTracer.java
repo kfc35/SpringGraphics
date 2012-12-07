@@ -228,8 +228,22 @@ public class WhittedRayTracer extends RayTracer {
 		
 		// TODO(B): Compute the distance that the ray travels and attenuate
 		//          the output color by the absorption according to Beer's law.
+		double tBegin = ray.start;
+		double tEnd = intersectionRecord.t;
+		Vector3 startPos = new Vector3(ray.origin);
+		startPos.scaleAdd(tBegin, ray.direction);
+		Vector3 endPos = new Vector3(ray.origin);
+		endPos.scaleAdd(tEnd, ray.direction);
 		
-		//TODO calculate distance...
+		//subtract the end position from the starting position to
+		//get the vector from start to finish
+		endPos.sub(startPos);
+		double length = endPos.length();
+		
+		Color absorp = new Color(absorption);
+		absorp.scale(-length);
+		//outColor = outColor exp(- l * absorp)
+		outColor.scale(Math.exp(absorp.r), Math.exp(absorp.g), Math.exp(absorp.b));
 	}
 
 	@Override
