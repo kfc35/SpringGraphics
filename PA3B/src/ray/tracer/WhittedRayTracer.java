@@ -208,11 +208,11 @@ public class WhittedRayTracer extends RayTracer {
 					double dot = specRay.direction.dot(intersectionRecord.normal);
 					// 5)
 					Color absorp = new Color();
-					if (dot < 0) {
+					if (dot > 0) {
 						//ray is traveling inside, so the ray will travel outside next
 						absorp.set(intersectionRecord.surface.getOutsideAbsorption());
 					}
-					else if (dot > 0) {
+					else {
 						absorp.set(intersectionRecord.surface.getInsideAbsorption());
 					}
 					// 6)
