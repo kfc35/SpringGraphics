@@ -217,7 +217,7 @@ public class WhittedRayTracer extends RayTracer {
 					}
 					// 6)
 					Color outColorRec = new Color();
-					shadeRay(outColorRec, scene, ray, workspace, absorp, depth + 1);
+					shadeRay(outColorRec, scene, specRay, workspace, absorp, depth + 1);
 					
 					// 7)
 					outColorRec.scale(records[i].factor);
