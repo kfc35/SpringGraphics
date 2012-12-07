@@ -167,6 +167,7 @@ public class Bvh implements AccelStruct {
 		// Check for the base case. 
 		// If the range [left, right) is small enough, just return a new leaf node.
 		if (right - left <= 10) {
+			//System.out.println("left: " + left + " right: " + right);
 			return new BvhNode(minB, maxB, null, null, left, right);
 		}
 		
@@ -195,7 +196,9 @@ public class Bvh implements AccelStruct {
 
 		// ==== Step 5 ====
 		// Recursively create left and right children.
-		int mid = (right-left)/2;
+		int mid = (right-left)/2+left;
+		//System.out.println("step 5: left: " + left + " right: " + right + " mid: " + mid);
+
 		BvhNode leftChild = createTree(left, mid);
 		BvhNode rightChild = createTree(mid, right);
 		return new BvhNode(minB, maxB, leftChild, rightChild, left, right);
