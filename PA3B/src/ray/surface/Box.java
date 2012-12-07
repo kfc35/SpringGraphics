@@ -124,7 +124,35 @@ public class Box extends Surface {
 		// Hint: The bounding box is not the same as just minPt and maxPt,
 		// because
 		// this object can be transformed by a transformation matrix.
-
+		averagePosition = new Point3((minPt.x+maxPt.x)/2, (minPt.y+maxPt.y)/2, (minPt.z+maxPt.z)/2);
+		tMat.rightMultiply(averagePosition);
+		
+		minBound = new Point3(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY); 
+	    maxBound = new Point3(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+	    
+	    Point3[] v = new Point3[8];
+	    int count = 0;
+	    for (int i = 0; i < 2; i++) {
+	    	for (int j = 0; j < 2; j++) {
+	    		for (int k = 0; k < 2; k++) {
+	    			v[count] = new Point3();
+	    			v[count].x = minPt.x*i+maxPt.x*(1.0-i);
+	    			v[count].y = minPt.y*j+maxPt.y*(1.0-j);
+	    			v[count].z = minPt.z*k+maxPt.z*(1.0-k);
+	    			count++;
+	    		}
+	    	}
+	    }
+	    
+		for (int i = 0; i < 8; i++) {
+			tMat.rightMultiply(v[i]);
+			for (int j = 0; j < 3; j++) {
+				if (v[i].getE(j) < minBound.getE(j))
+					minBound.setE(j, v[i].getE(j));
+				if (v[i].getE(j) > maxBound.getE(j))
+					maxBound.setE(j, v[i].getE(j));
+			}
+		}
 	}
 
 	/**
