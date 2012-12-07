@@ -85,7 +85,52 @@ public class BvhNode {
 		// TODO(B): fill in this function.
 		// Hint: reuse your code from box intersection.
 		// REUSE CODE FROM BOX INTERSECTION
+		double px = ray.origin.x;
+		double py = ray.origin.y;
+		double pz = ray.origin.z;
 		
-		return false;
+		double dx = ray.direction.x;
+		double dy = ray.direction.y;
+		double dz = ray.direction.z;
+		
+		double minx = minBound.x;
+		double miny = minBound.y;
+		double minz = minBound.z;
+		
+		double maxx = maxBound.x;
+		double maxy = maxBound.y;
+		double maxz = maxBound.z;
+		
+		double tminx = (minx-px)/dx;
+		double tmaxx = (maxx-px)/dx;
+		double txmin = Math.min(tminx, tmaxx);
+		double txmax = Math.max(tminx, tmaxx);
+		
+		double tminy = (miny-py)/dy;
+		double tmaxy = (maxy-py)/dy;
+		double tymin = Math.min(tminy, tmaxy);
+		double tymax = Math.max(tminy, tmaxy);
+		
+		double tminz = (minz-pz)/dz;
+		double tmaxz = (maxz-pz)/dz;
+		double tzmin = Math.min(tminz, tmaxz);
+		double tzmax = Math.max(tminz, tmaxz);
+		
+		double tmin = Math.max(txmin, Math.max(tymin, tzmin));
+		double tmax = Math.min(txmax, Math.min(tymax, tzmax));
+		
+		if (tmin > tmax) {
+			// no intersection
+			return false;
+		}
+		
+		if (tmin > ray.start && tmin < ray.end) {
+			return true;
+		} else if (tmax > ray.start && tmax < ray.end) {
+			return true;
+		} else {
+			// neither intersection was in the ray's half line
+			return false;
+		}
 	}
 }

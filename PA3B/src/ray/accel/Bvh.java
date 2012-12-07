@@ -73,7 +73,58 @@ public class Bvh implements AccelStruct {
 		// Hint: For a leaf node, use a normal linear search. 
 		// Otherwise, search in the left and right children.
 		
-		return false;
+		// check if it intersect this node, if not return false
+		if (!node.intersects(rayIn)) {
+			return false;
+		}
+		
+		IntersectionRecord closest = new IntersectionRecord();
+		closest.t = Double.POSITIVE_INFINITY;
+		boolean intersectFound = false;
+		
+		// if leaf node, check intersection with surfaces and find closest t
+		if (node.isLeaf()) {
+			for (int i=node.surfaceIndexStart; i < node.surfaceIndexEnd; i++) {
+				IntersectionRecord record = new IntersectionRecord();
+				if (surfaces[i].intersect(record, rayIn)) {
+					intersectFound = true;
+					if (anyIntersection) {
+						outRecord.set(record);
+						return true;
+					}
+					if (closest.t > record.t) {
+						closest.set(record);
+					}
+				}
+			}
+			if (intersectFound) {
+				outRecord.set(closest);
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		// recursive: call it on left and right child
+		IntersectionRecord record = new IntersectionRecord();
+		for (int i = 0; i < 2; i++) {
+			if (intersectHelper(node.child[i], record, rayIn, anyIntersection)) {
+				intersectFound = true;
+				if (anyIntersection) {
+					outRecord.set(record);
+					return true;
+				}
+				if (closest.t > record.t) {
+					closest.set(record);
+				}
+			}
+		}
+		if (intersectFound) {
+			outRecord.set(closest);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
@@ -90,7 +141,7 @@ public class Bvh implements AccelStruct {
 	 */
 	private BvhNode createTree(int left, int right) {
 		// TODO(B): fill in this function.
-		int i, j;
+//		int i, j;
 
 		// ==== Step 1 ====
 		// Find out the BIG bounding box enclosing all the surfaces in the range [left, right)
@@ -98,20 +149,41 @@ public class Bvh implements AccelStruct {
 		// Hint: To find the bounding box for each surface, use getMinBound() and getMaxBound() */
 		Point3 minB = new Point3(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY); 
 		Point3 maxB = new Point3(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-
 		
+		for (int i = left; i < right; i++) {
+			Point3 surfMinB = surfaces[i].getMinBound();
+			Point3 surfMaxB = surfaces[i].getMaxBound();
+			for (int j = 0; j < 3; j++) {
+				if (surfMinB.getE(j) < minB.getE(j)) {
+					minB.setE(j, surfMinB.getE(j));
+				}
+				if (surfMaxB.getE(j) > maxB.getE(j)) {
+					maxB.setE(j, surfMaxB.getE(j));
+				}
+			}
+		}
 		
 		// ==== Step 2 ====
 		// Check for the base case. 
 		// If the range [left, right) is small enough, just return a new leaf node.
-
+		if (right - left == 10) {
+			return new BvhNode(minB, maxB, null, null, left, right);
+		}
 		
 
 		// ==== Step 3 ====
 		// Figure out the widest dimension (x or y or z).
 		// If x is the widest, set widestDim = 0. If y, set widestDim = 1. If z, set widestDim = 2.
 		int widestDim = 0;
-
+		double[] dims = new double[3];
+		for (int i = 0; i < 3; i++) {
+			dims[i] = maxB.getE(i) - minB.getE(i);
+		}
+		for (int i = 0; i < 3; i++) {
+			if (dims[widestDim] < dims[i]) {
+				widestDim = i;
+			}
+		}
 
 		
 		// ==== Step 4 (DONE) ====
@@ -123,8 +195,10 @@ public class Bvh implements AccelStruct {
 
 		// ==== Step 5 ====
 		// Recursively create left and right children.
-		
-		return null;
+		int mid = (right-left)/2;
+		BvhNode leftChild = createTree(left, mid);
+		BvhNode rightChild = createTree(mid, right);
+		return new BvhNode(minB, maxB, leftChild, rightChild, left, right);
 	}
 
 }
