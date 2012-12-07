@@ -74,8 +74,8 @@ public class WhittedRayTracer extends RayTracer {
 				for(int i = 0; i < samples; i++) {
 					for(int j = 0; j < samples; j++) {
 						// TODO(B): Compute the "ray" and call shadeRay on it.
-						
-						
+						cam.getRay(ray, (x+(i*sInv+sInvD2))/width, (y+(j*sInv+sInvD2))/height);
+						shadeRay(rayColor, scene, ray, work, scene.getAbsorption(), 0);
 						
 						pixelColor.add(rayColor);
 					}
