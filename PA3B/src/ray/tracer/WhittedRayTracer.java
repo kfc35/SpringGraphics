@@ -149,33 +149,34 @@ public class WhittedRayTracer extends RayTracer {
 		Material material = intersectionRecord.surface.getMaterial();
 		// 2)
 		if (!material.canInteractWithLight()) {
-			return;
 		}
-		// 3)
-		Vector3 intersectionPoint = new Vector3(intersectionRecord.location);
-		Vector3 outgoing = new Vector3(ray.origin);
-		outgoing.sub(intersectionPoint);
-		//outgoing.normalize();
-		// 4)
-		for (Iterator<Light> iter = scene.getLights().iterator(); iter.hasNext();) {
-			Light light = iter.next();
-			// 5)
-			Vector3 incoming = new Vector3(light.position);
-			incoming.sub(intersectionPoint);
-			//incoming.normalize();
+		else {
+			// 3)
+			Vector3 intersectionPoint = new Vector3(intersectionRecord.location);
+			Vector3 outgoing = new Vector3(ray.origin);
+			outgoing.sub(intersectionPoint);
+			//outgoing.normalize();
+			// 4)
+			for (Iterator<Light> iter = scene.getLights().iterator(); iter.hasNext();) {
+				Light light = iter.next();
+				// 5)
+				Vector3 incoming = new Vector3(light.position);
+				incoming.sub(intersectionPoint);
+				//incoming.normalize();
 
-			// 6)
-			Color BDRF = new Color();
-			material.evaluate(BDRF, intersectionRecord, incoming, outgoing);
+				// 6)
+				Color BDRF = new Color();
+				material.evaluate(BDRF, intersectionRecord, incoming, outgoing);
 
-			// 7)
-			if (!BDRF.isZero()) {
-				Ray shadowRay = new Ray();
-				// 8)
-				if (!isShadowed(scene, light, intersectionRecord, shadowRay)) {
-					Color intensity = new Color(light.intensity);
-					intensity.scale(BDRF);
-					outColor.add(intensity);
+				// 7)
+				if (!BDRF.isZero()) {
+					Ray shadowRay = new Ray();
+					// 8)
+					if (!isShadowed(scene, light, intersectionRecord, shadowRay)) {
+						Color intensity = new Color(light.intensity);
+						intensity.scale(BDRF);
+						outColor.add(intensity);
+					}
 				}
 			}
 		}
@@ -196,9 +197,13 @@ public class WhittedRayTracer extends RayTracer {
 		//    and add it to the output color.
 		
 		// 1)
+		
 		if (material.hasPerfectlySpecularComponent()) {
 			// 2)
-			RayRecord[] records = material.getIncomingSpecularRays(intersectionRecord, ray.direction);
+			Vector3 outgoing = new Vector3(ray.direction);
+			outgoing.scale(-1.0);
+			
+			RayRecord[] records = material.getIncomingSpecularRays(intersectionRecord, outgoing);
 			// 3)
 			for (int i = 0; i < records.length; i++) {
 				Ray specRay = records[i].ray;

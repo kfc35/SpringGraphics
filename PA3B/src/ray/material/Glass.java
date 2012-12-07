@@ -74,6 +74,7 @@ public class Glass extends Material {
 		else { //this should never happen
 			//if the outgoing and the normal are perp., then the
 			//outgoing is implied not to intersect the surface, contradiction!
+			System.out.println("This happened!");
 			return null;
 		}
 		
@@ -82,6 +83,8 @@ public class Glass extends Material {
 		//r_0 + (1 - r_0)(1 - cos(theta))^5
 		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
 		double fresnel = r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0);
+		System.out.println("fresnel = " + fresnel);
+		
 		
 		//Reflected Ray = 2 * normalNorm * (normalNorm dot outgoingNorm) - outgoingNorm
 		Vector3 reflectedRay = new Vector3(normalNorm);
@@ -94,6 +97,11 @@ public class Glass extends Material {
 		//Check for total internal reflection
 		//Taken from Lecture 35 Slide 27
 		//TODO outgoing may have to be reversed... this will be a bug if it arises.
+		Vector3 outgoingNormReversed = new Vector3(outgoing);
+		outgoingNormReversed.scale(-1.0);
+		outgoingNormReversed.normalize();
+		projection = outgoingNormReversed.dot(normalNorm);
+		
 		double determinant = 1 - (Math.pow(n_1, 2.0) * (1 -Math.pow(projection, 2.0)))/(Math.pow(n_2, 2.0));
 		
 		RayRecord[] toReturn = null;
@@ -114,6 +122,7 @@ public class Glass extends Material {
 		
 		if (determinant < 0) {
 			//For total internal reflection, its factor is 1.0
+			System.out.println("total internal ref");
 			toReturn[0].factor.set(1.0);
 		}
 		else {
@@ -122,7 +131,7 @@ public class Glass extends Material {
 			//Calculate transmitted vector
 			//Taken from Lecture 35 Slide 27
 			//TODO may need to reverse outgoingNorm!
-			Vector3 transmittedVector = new Vector3(outgoingNorm);
+			Vector3 transmittedVector = new Vector3(outgoingNormReversed);
 			Vector3 subtractArgOne = new Vector3(normalNorm);
 			Vector3 subtractArgTwo = new Vector3(normalNorm);
 			
