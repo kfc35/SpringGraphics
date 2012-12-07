@@ -90,17 +90,17 @@ public class Triangle extends Surface {
 		
 		// calculating t, gamma, and beta based on linear system presented in 
 		// Shirley and Marschner
-		double ei_hf = (ay-cy)*dz - dy*(az-cz);
-		double gf_di = dx*(az-cz)-(ax-cx)*dz;
-		double dh_eg = (ax-cx)*dy - (ay-cy)*dx;
+		double ei_hf = e*dz - dy*f;
+		double gf_di = dx*f - d*dz;
+		double dh_eg = d*dy - e*dx;
 		
-		double ak_jb = (ax-bx)*(ay-py) - (ax-px)*(ay-by);
-		double jc_al = (ax-px)*(az-bz) - (ax-bx)*(az-pz);
-		double bl_kc = (ay-by)*(az-pz) - (ay-py)*(az-bz);
+		double ak_jb = a*(ay-py) - (ax-px)*b;
+		double jc_al = (ax-px)*c - a*(az-pz);
+		double bl_kc = b*(az-pz) - (ay-py)*c;
 		
-		double m = (ax-bx)*ei_hf + (ay-by)*gf_di + (az-bz)*dh_eg;
+		double m = a*ei_hf + b*gf_di + c*dh_eg;
 		
-		double t = ((az-cz)*ak_jb + (ay-cy)*jc_al + (ax-cx)*bl_kc)/m;
+		double t = (f*ak_jb + e*jc_al + d*bl_kc)/m;
 		if (t < ray.start || t > ray.end) {
 			return false;
 		}
@@ -163,9 +163,9 @@ public class Triangle extends Surface {
 		
 		Point3[] v = new Point3[8];
 		int count = 0;
-		for (int i = -1; i < 2; i += 2) {
-			for (int j = -1; j < 2; j += 2) {
-				for (int k = -1; k < 2; k += 2) {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				for (int k = 0; k < 2; k++) {
 					v[count] = new Point3();
 					v[count].x = min_x*i+max_x*(1.0-i);
 					v[count].y = min_y*j+max_y*(1.0-j);

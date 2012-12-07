@@ -196,7 +196,7 @@ public class Bvh implements AccelStruct {
 
 		// ==== Step 5 ====
 		// Recursively create left and right children.
-		int mid = (right-left)/2+left;
+		int mid = (right+left)/2;
 		//System.out.println("step 5: left: " + left + " right: " + right + " mid: " + mid);
 
 		BvhNode leftChild = createTree(left, mid);
