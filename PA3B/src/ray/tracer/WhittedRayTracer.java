@@ -197,7 +197,6 @@ public class WhittedRayTracer extends RayTracer {
 		//    and add it to the output color.
 		
 		// 1)
-		
 		if (material.hasPerfectlySpecularComponent()) {
 			// 2)
 			Vector3 outgoing = new Vector3(ray.direction);

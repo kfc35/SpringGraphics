@@ -83,7 +83,6 @@ public class Glass extends Material {
 		//r_0 + (1 - r_0)(1 - cos(theta))^5
 		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
 		double fresnel = r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0);
-		System.out.println("fresnel = " + fresnel);
 		
 		
 		//Reflected Ray = 2 * normalNorm * (normalNorm dot outgoingNorm) - outgoingNorm
@@ -122,7 +121,6 @@ public class Glass extends Material {
 		
 		if (determinant < 0) {
 			//For total internal reflection, its factor is 1.0
-			System.out.println("total internal ref");
 			toReturn[0].factor.set(1.0);
 		}
 		else {
