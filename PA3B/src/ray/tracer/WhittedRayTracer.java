@@ -65,8 +65,8 @@ public class WhittedRayTracer extends RayTracer {
 		double sInvD2 = sInv / 2;
 		double sInvSqr = sInv * sInv;
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
+		for (int y = (600-139); y < (600-139)+28; y++) {
+			for (int x = 153; x < 153+53; x++) {
 
 				pixelColor.set(0, 0, 0);
 
