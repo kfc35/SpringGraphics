@@ -114,7 +114,7 @@ public class Triangle extends Surface {
 			ray.evaluate(outRecord.location, t);
 			outRecord.surface = this;
 			
-			if (owner.existsNormals()) {
+			if (norm == null) {
 				// interpolate normal based on barycentric coords
 				double alpha = 1.0 - gamma - beta;
 				Vector3 an = owner.getNormal(index[0]);
