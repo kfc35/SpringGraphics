@@ -75,12 +75,6 @@ public class Triangle extends Surface {
 		double ax = owner.getVertex(index[0]).x;
 		double ay = owner.getVertex(index[0]).y;
 		double az = owner.getVertex(index[0]).z;
-		double bx = owner.getVertex(index[1]).x;
-		double by = owner.getVertex(index[1]).y;
-		double bz = owner.getVertex(index[1]).z;
-		double cx = owner.getVertex(index[2]).x;
-		double cy = owner.getVertex(index[2]).y;
-		double cz = owner.getVertex(index[2]).z;
 		double px = ray.origin.x;
 		double py = ray.origin.y;
 		double pz = ray.origin.z;
@@ -100,7 +94,7 @@ public class Triangle extends Surface {
 		
 		double m = a*ei_hf + b*gf_di + c*dh_eg;
 		
-		double t = (f*ak_jb + e*jc_al + d*bl_kc)/m;
+		double t = -(f*ak_jb + e*jc_al + d*bl_kc)/m;
 		if (t < ray.start || t > ray.end) {
 			return false;
 		}
@@ -122,7 +116,7 @@ public class Triangle extends Surface {
 			
 			if (norm == null) {
 				// interpolate normal based on barycentric coords
-				double alpha = 1 - gamma - beta;
+				double alpha = 1.0 - gamma - beta;
 				Vector3 an = owner.getNormal(index[0]);
 				an.scale(alpha);
 				Vector3 bn = owner.getNormal(index[1]);
