@@ -56,8 +56,9 @@ public class Glazed extends Material {
 			n_2 = refractiveIndex;
 		}
 		else if (projection < 0) { //outgoing is inside the material
-			n_1 = refractiveIndex;
-			n_2 = 1.0;
+			//n_1 = refractiveIndex;
+			//n_2 = 1.0;
+			return;
 		}
 		else { //if this happens, there's no scaling component?
 			return;
@@ -106,8 +107,9 @@ public class Glazed extends Material {
 			n_2 = refractiveIndex;
 		}
 		else if (projection < 0) { //outgoing is inside the material
-			n_1 = refractiveIndex;
-			n_2 = 1.0;
+			//n_1 = refractiveIndex;
+			//n_2 = 1.0;
+			return null;
 		}
 		else { //this should never happen
 			//if the outgoing and the normal are perp., then the
