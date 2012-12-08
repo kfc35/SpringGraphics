@@ -70,6 +70,8 @@ public class Glass extends Material {
 		else { //outgoing is inside the material
 			n_1 = refractiveIndex;
 			n_2 = 1.0;
+			normalNorm.scale(-1.0);
+			projection = outgoingNorm.dot(normalNorm);
 		}
 		/*
 		else { //this should never happen
@@ -102,10 +104,10 @@ public class Glass extends Material {
 		outgoingNormReversed.normalize();
 		projection = outgoingNormReversed.dot(normalNorm);
 		
-		double determinant = 1 - (Math.pow(n_1, 2.0) * (1 -Math.pow(projection, 2.0)))/(Math.pow(n_2, 2.0));
+		double determinant = 1 - (Math.pow(n_1, 2.0) * (1-Math.pow(projection, 2.0)))/(Math.pow(n_2, 2.0));
 		
 		RayRecord[] toReturn = null;
-		if (determinant < 0) {
+		if (determinant < 0.0) {
 			toReturn = new RayRecord[1];
 			
 		}
@@ -120,7 +122,7 @@ public class Glass extends Material {
 		//starts at the intersection point
 		toReturn[0].ray.set(record.location, reflectedRay);
 		
-		if (determinant < 0) {
+		if (determinant < 0.0) {
 			//For total internal reflection, its factor is 1.0
 			toReturn[0].factor.set(1.0);
 		}
