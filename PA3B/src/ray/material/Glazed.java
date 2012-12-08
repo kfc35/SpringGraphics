@@ -112,6 +112,7 @@ public class Glazed extends Material {
 		else { //this should never happen
 			//if the outgoing and the normal are perp., then the
 			//outgoing is implied not to intersect the surface, contradiction!
+			System.out.println("This happened!");
 			return null;
 		}
 		

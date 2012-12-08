@@ -67,28 +67,29 @@ public class Glass extends Material {
 			n_1 = 1.0;
 			n_2 = refractiveIndex;
 		}
-		else if (projection < 0) { //outgoing is inside the material
+		else { //outgoing is inside the material
 			n_1 = refractiveIndex;
 			n_2 = 1.0;
 		}
+		/*
 		else { //this should never happen
 			//if the outgoing and the normal are perp., then the
 			//outgoing is implied not to intersect the surface, contradiction!
 			System.out.println("This happened!");
 			return null;
-		}
+		}*/
 		
 		double r_0 = Math.pow(((n_2 - n_1)/(n_2 + n_1)), 2.0);
 		//Fresnel Coefficient
 		//r_0 + (1 - r_0)(1 - cos(theta))^5
 		//cos(theta) = (normalNorm dot outgoingNorm) / (||normalNorm|| ||outgoingNorm||)
-		double fresnel = r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0);
 		
+		double fresnel = r_0 + (1.0 - r_0) * Math.pow(1.0 - projection, 5.0);
 		
 		//Reflected Ray = 2 * normalNorm * (normalNorm dot outgoingNorm) - outgoingNorm
 		Vector3 reflectedRay = new Vector3(normalNorm);
 		reflectedRay.scale(2.0);
-		reflectedRay.scale(projection);
+		reflectedRay.scale(normalNorm.dot(outgoingNorm));
 		reflectedRay.sub(outgoingNorm);
 		
 		// --- end copy
